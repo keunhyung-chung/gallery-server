@@ -110,14 +110,20 @@ app.use(async ctx => {
       ctx.set('Access-Control-Allow-Origin', '*');
     }
 
-    if (ctx.path === '/api/images') {
-      const photos = getRelativeFiles(mediaFolder, isImage);
+    const folder = ctx.query['folder'];
+    var subMediaFolder = mediaFolder;
+    if (folder && folder !== 'null') {
+      subMediaFolder = path.join(mediaFolder, folder);
+    }
 
-      return sendPhotos(ctx, photos);
+    if (ctx.path === '/api/images') {
+      const photos = getRelativeFiles(subMediaFolder, isImage);
+
+      return sendPhotos(ctx, photos, subMediaFolder);
     }
 
     if (ctx.path === '/api/videos') {
-      const videos = getRelativeFiles(mediaFolder, isVideo);
+      const videos = getRelativeFiles(subMediaFolder, isVideo);
 
       return sendVideos(ctx, videos);
     }
@@ -131,12 +137,12 @@ app.use(async ctx => {
   ctx.redirect(REPO);
 });
 
-async function sendPhotos(ctx, photoPaths) {
+async function sendPhotos(ctx, photoPaths, subMediaFolder) {
   const photos = await Promise.all(photoPaths.map(async src => {
     let dimensions = { width: 1, height: 1, orientation: 1 };
 
     try {
-      dimensions = await sizeOf(mediaFolder + '/' + src);
+      dimensions = await sizeOf(subMediaFolder + '/' + src);
     } catch (error) {
       console.error(error);
     }
