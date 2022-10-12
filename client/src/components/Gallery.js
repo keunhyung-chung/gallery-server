@@ -4,6 +4,7 @@ import Carousel, { Modal, ModalGateway } from 'react-images';
 import PhotoWall from "react-photo-gallery";
 
 import fetch from '../utils/fetch'
+import folder from '../utils/folder';
 import token from '../utils/token';
 // import { showDemoPhotos } from './gallery-from-demo-api';
 
@@ -69,7 +70,7 @@ function showPhotos(setPhotos) {
 
       return {
         ...photo,
-        src: src + (src.includes('?') ? '&' : '?') + `token=${token}`,
+        src: (!folder ? '' : `${folder}/`) + src + (src.includes('?') ? '&' : '?') + `token=${token}`,
       };
     }));
   });
