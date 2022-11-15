@@ -123,7 +123,7 @@ app.use(async ctx => {
     }
 
     if (ctx.path === '/api/videos') {
-      const videos = getRelativeFiles(subMediaFolder, isVideo);
+      const videos = getRelativeVideos(subMediaFolder, isVideo);
 
       return sendVideos(ctx, videos);
     }
@@ -227,6 +227,11 @@ async function choosePort(port) {
 function getRelativeFiles(folder, predicate) {
   return findAllFiles(folder, predicate)
     .map(filePath => path.relative(folder, filePath))
+}
+
+function getRelativeVideos(folder, predicate) {
+  return findAllFiles(folder, predicate)
+    .map(filePath => path.relative(mediaFolder, filePath))
 }
 
 /**
